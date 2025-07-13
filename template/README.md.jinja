@@ -1,0 +1,34 @@
+# {{ package_name }}
+
+{%- if readme_badges %}
+
+[![Tests]({{ repository_url }}/actions/workflows/tests.yml/badge.svg)]({{ repository_url }}/actions/workflows/tests.yml)
+[![PyPI version](https://badge.fury.io/py/{{ repo_name }}.svg)](https://badge.fury.io/py/{{ repo_name }})
+![Supported versions](https://img.shields.io/badge/python-{{ python_min_version }}+-blue.svg)
+[![Downloads](https://static.pepy.tech/badge/{{ repo_name }})](https://pepy.tech/project/{{ repo_name }})
+[![license](https://img.shields.io/github/license/{{ github_username }}/{{ repo_name }}.svg)]({{ repository_url }}/blob/master/LICENSE)
+{%- endif %}
+
+{{ description }}
+
+## Installation
+
+#### Using pip
+
+```sh
+pip install {{ repo_name }}
+```
+
+#### Using uv
+
+```sh
+uv add {{ repo_name }}
+```
+
+#### From source
+
+```sh
+pip install git+{{ repository_url }}.git
+# or with uv
+uv add git+{{ repository_url }}.git
+```
