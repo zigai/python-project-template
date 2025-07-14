@@ -1,5 +1,6 @@
 import re
 import subprocess
+from datetime import date
 
 from jinja2.ext import Extension
 
@@ -77,3 +78,9 @@ class PythonVersionExtension(Extension):
     def _black_target_versions(self, min_version: str, max_version: str) -> list[str]:
         versions = self._py_versions_range(min_version, max_version)
         return [f"py{version.replace('.', '')}" for version in versions]
+
+
+class CurrentYearExtension(Extension):
+    def __init__(self, environment):
+        super().__init__(environment)
+        environment.globals["current_year"] = date.today().year
