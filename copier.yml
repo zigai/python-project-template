@@ -1,15 +1,25 @@
 _templates_suffix: .jinja
 _envops:
     autoescape: false
+
 _jinja_extensions:
     - copier_templates_extensions.TemplateExtensionLoader
     - extensions.py:GitDefaultsExtension
     - extensions.py:PythonVersionExtension
+    - extensions.py:CurrentYearExtension
+
 _subdirectory: "template"
 
 _templates:
     - path: LICENSE.jinja
       when: "{{ license != 'None' }}"
+    - path: .github/workflows/tests.yml.jinja
+      when: "{{ 'tests' in github_actions }}"
+    - path: .github/workflows/lint.yml.jinja
+      when: "{{ 'lint' in github_actions }}"
+    - path: .github/workflows/publish.yml.jinja
+      when: "{{ 'publish' in github_actions }}"
+
 package_name:
     type: str
     help: Python package name (must be a valid identifier)
@@ -119,15 +129,19 @@ copyright_license:
         Open Software License 3.0: OSL-3.0
         PostgreSQL License: PostgreSQL
 
+github_actions:
+    type: str
+    help: Which GitHub Actions to include? (multiple selection allowed)
+    multiselect: true
+    choices:
+        Tests: tests
+        Lint: lint
+        Publish to PyPI: publish
+    default: [tests, lint]
+
 readme_badges:
     type: bool
     help: Add badges to the README?
     default: true
-
-publish_gh_action:
-    type: bool
-    help: Add a GitHub action for publishing to PyPi?
-    default: true
-
 _tasks:
     - '{% if copyright_license == ''None'' %}python -c "import os; os.remove(''LICENSE'') if os.path.exists(''LICENSE'') else None"{% endif %}'
