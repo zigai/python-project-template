@@ -137,7 +137,7 @@ github_actions:
         Tests: tests
         Lint: lint
         Publish to PyPI: publish
-    default: [tests, lint]
+    default: []
 
 readme_badges:
     type: bool
