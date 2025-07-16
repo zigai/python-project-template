@@ -9,9 +9,9 @@ My personal Copier template for Python projects.
 * **Automated workflows** - [just](https://github.com/casey/just) commands for testing, linting, and building
 * **Code quality tools**: [ruff](https://docs.astral.sh/ruff/) for linting and formatting, pre-commit hooks
 * **Testing setup** with [pytest](https://docs.pytest.org/en/stable/) and [Hatch](https://hatch.pypa.io/latest/) for cross-version testing
-* **GitHub Actions integration**: optional workflows for testing and PyPI publishing
+* **GitHub Actions integration**: optional workflows for linting, testing and PyPI publishing
 * **Licenses from** [choosealicense.com](https://choosealicense.com/)
-* **Basic ```README.md```** with badges, installation instructions, and project structure
+* **Basic ```README.md```** with badges and installation instructions
 
 ## Requirements
 
