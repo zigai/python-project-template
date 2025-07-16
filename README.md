@@ -16,7 +16,7 @@ My personal Copier template for Python projects.
 ## Requirements
 
 * Python 3.8+
-* [Copier](https://copier.readthedocs.io/) (`pip install copier` or `uv tool install copier`)
+* [Copier](https://copier.readthedocs.io/) (`pip install copier copier_templates_extensions`)
 * Git
 
 ## Quick Setup
