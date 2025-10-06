@@ -10,7 +10,7 @@ from jinja2 import Environment
 from jinja2.ext import Extension
 from rich.text import Text
 
-from sprout import GitDefaultsExtension, Question, Style, validate_repository_url,
+from sprout import GitDefaultsExtension, Question, Style, validate_repository_url
 from sprout.cli import render_templates
 from sprout.prompt import console
 
@@ -48,16 +48,24 @@ def should_skip(relative_path: Path, answers: dict[str, Any]) -> bool:
 
     if as_posix == "LICENSE.jinja" and answers.get("copyright_license") == "None":
         return True
-    if as_posix == ".github/workflows/tests.yml.jinja" and "tests" not in github_actions:
+    if (
+        as_posix == ".github/workflows/tests.yml.jinja"
+        and "tests" not in github_actions
+    ):
         return True
     if as_posix == ".github/workflows/lint.yml.jinja" and "lint" not in github_actions:
         return True
-    if as_posix == ".github/workflows/publish.yml.jinja" and "publish" not in github_actions:
+    if (
+        as_posix == ".github/workflows/publish.yml.jinja"
+        and "publish" not in github_actions
+    ):
         return True
     return False
 
 
-def validate_package_name(value: str, answers: dict[str, Any]) -> tuple[bool, str | None]:
+def validate_package_name(
+    value: str, answers: dict[str, Any]
+) -> tuple[bool, str | None]:
     name = value.strip()
     if not name:
         return False, "Package name is required."
@@ -86,9 +94,15 @@ def validate_versions(value: str, answers: dict[str, Any]) -> tuple[bool, str | 
     if not required.issubset(answers):
         return True, None
 
-    min_version = tuple(int(part) for part in str(answers["python_min_version"]).split("."))
-    max_version = tuple(int(part) for part in str(answers["python_max_version"]).split("."))
-    default_version = tuple(int(part) for part in str(answers["python_default_version"]).split("."))
+    min_version = tuple(
+        int(part) for part in str(answers["python_min_version"]).split(".")
+    )
+    max_version = tuple(
+        int(part) for part in str(answers["python_max_version"]).split(".")
+    )
+    default_version = tuple(
+        int(part) for part in str(answers["python_default_version"]).split(".")
+    )
 
     if min_version > max_version:
         return (
