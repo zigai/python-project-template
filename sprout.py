@@ -125,13 +125,6 @@ def _python_identifier(name: str) -> str:
     return sanitized
 
 
-def title() -> None:
-    header = Text()
-    header.append("Python Project Generator", style="bold magenta")
-    console.print(header)
-    console.print(Text("═" * 48, style="magenta"))
-
-
 python_version_choices = [
     ("3.8", "Python 3.8"),
     ("3.9", "Python 3.9"),
@@ -192,6 +185,29 @@ def questions(env: Environment, destination: Path) -> list[Question]:
 
     suggested_package = _python_identifier(destination.name)
 
+    def version_tuple(value: str | None) -> tuple[int, int] | None:
+        if not value:
+            return None
+        major, minor = value.split(".")
+        return int(major), int(minor)
+
+    def filtered_version_choices(
+        *,
+        min_version: str | None = None,
+        max_version: str | None = None,
+    ) -> list[tuple[str, str]]:
+        min_tuple = version_tuple(min_version)
+        max_tuple = version_tuple(max_version)
+        choices: list[tuple[str, str]] = []
+        for value, label in python_version_choices:
+            current_tuple = version_tuple(value)
+            if min_tuple and current_tuple and current_tuple < min_tuple:
+                continue
+            if max_tuple and current_tuple and current_tuple > max_tuple:
+                continue
+            choices.append((value, label))
+        return choices
+
     def default_package_name(answers: dict[str, Any]) -> str:
         return suggested_package
 
@@ -204,6 +220,45 @@ def questions(env: Environment, destination: Path) -> list[Question]:
         repo = answers.get("repo_name") or default_repo_name(answers)
         username = env.globals.get("github_username") or "my-user"
         return f"https://github.com/{username}/{repo}"
+
+    def python_max_version_choices(answers: dict[str, Any]) -> list[tuple[str, str]]:
+        min_version = answers.get("python_min_version")
+        return filtered_version_choices(min_version=min_version)
+
+    def default_python_max_version(answers: dict[str, Any]) -> str:
+        choices = python_max_version_choices(answers)
+        preferred = "3.13"
+        available_values = [value for value, _ in choices]
+        if preferred in available_values:
+            return preferred
+        if available_values:
+            return available_values[-1]
+        return preferred
+
+    def python_default_version_choices(
+        answers: dict[str, Any],
+    ) -> list[tuple[str, str]]:
+        min_version = answers.get("python_min_version")
+        max_version = answers.get("python_max_version")
+        return filtered_version_choices(
+            min_version=min_version, max_version=max_version
+        )
+
+    def default_python_default_version(answers: dict[str, Any]) -> str:
+        choices = python_default_version_choices(answers)
+        preferred = "3.12"
+        available_values = [value for value, _ in choices]
+        if preferred in available_values:
+            return preferred
+        for key in (
+            answers.get("python_max_version"),
+            answers.get("python_min_version"),
+        ):
+            if key in available_values:
+                return str(key)
+        if available_values:
+            return available_values[-1]
+        return preferred
 
     return [
         Question(
@@ -233,6 +288,8 @@ def questions(env: Environment, destination: Path) -> list[Question]:
         Question(
             key="description",
             prompt="Project description",
+            default=" ",
+            parser=lambda value, answers: value.strip(),
         ),
         Question(
             key="repository_url",
@@ -249,15 +306,15 @@ def questions(env: Environment, destination: Path) -> list[Question]:
         Question(
             key="python_max_version",
             prompt="Maximum supported Python version",
-            choices=python_version_choices,
-            default="3.13",
+            choices=python_max_version_choices,
+            default=default_python_max_version,
             validators=[validate_versions],
         ),
         Question(
             key="python_default_version",
             prompt="Default development Python version",
-            choices=python_version_choices,
-            default="3.12",
+            choices=python_default_version_choices,
+            default=default_python_default_version,
             validators=[validate_versions],
         ),
         Question(
