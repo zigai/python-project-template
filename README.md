@@ -50,4 +50,4 @@ your-project/
 
 ## License
 
-[MIT License](https://github.com/zigai/python-project-template/blob/master/LICENSE).
+[MIT License](https://github.com/zigai/python-project-template/blob/master/LICENSE)
