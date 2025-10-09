@@ -1,6 +1,6 @@
-# Copier Python Template
+# Python Project Template
 
-My personal Copier template for Python projects.
+My personal template for Python projects.
 
 ## Features
 
@@ -16,7 +16,7 @@ My personal Copier template for Python projects.
 ## Requirements
 
 * Python 3.8+
-* [Copier](https://copier.readthedocs.io/) (`pip install copier copier_templates_extensions`)
+* [sprout](https://github.com/zigai/sprout)
 * Git
 
 ## Quick Setup
@@ -24,18 +24,12 @@ My personal Copier template for Python projects.
 Create a new Python project:
 
 ```bash
-copier copy --trust "https://github.com/zigai/python-project-template.git" /path/to/your/project
-```
-
-or
-
-```bash
-copier copy --trust "gh:zigai/python-project-template" /path/to/your/project
+sprout "https://github.com/zigai/python-project-template.git" /path/to/your/project
 ```
 
 ## Generated Project Structure
 
-```
+```text
 your-project/
 ├── your_package/
 │   └── __init__.py
@@ -53,9 +47,10 @@ your-project/
 
 ## Similar Templates
 
+* [cookiecutter-uv](https://github.com/fpgmaas/cookiecutter-uv)
 * [copier-uv](https://github.com/pawamoy/copier-uv)
 * [python-copier-template](https://github.com/DiamondLightSource/python-copier-template)
 
 ## License
 
-This template is released under the [MIT License](https://github.com/zigai/python-project-template/blob/master/LICENSE).
+[MIT License](https://github.com/zigai/python-project-template/blob/master/LICENSE).

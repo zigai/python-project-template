@@ -8,11 +8,8 @@ from typing import Any
 
 from jinja2 import Environment
 from jinja2.ext import Extension
-from rich.text import Text
 
-from sprout import GitDefaultsExtension, Question, Style, validate_repository_url
-from sprout.cli import render_templates
-from sprout.prompt import console
+from sprout import GitDefaultsExtension, Question, validate_repository_url
 
 
 class PythonVersionExtension(Extension):
@@ -40,27 +37,6 @@ class CurrentYearExtension(Extension):
     def __init__(self, environment: Environment):
         super().__init__(environment)
         environment.globals["current_year"] = date.today().year
-
-
-def should_skip(relative_path: Path, answers: dict[str, Any]) -> bool:
-    as_posix = relative_path.as_posix()
-    github_actions = answers.get("github_actions", [])
-
-    if as_posix == "LICENSE.jinja" and answers.get("copyright_license") == "None":
-        return True
-    if (
-        as_posix == ".github/workflows/tests.yml.jinja"
-        and "tests" not in github_actions
-    ):
-        return True
-    if as_posix == ".github/workflows/lint.yml.jinja" and "lint" not in github_actions:
-        return True
-    if (
-        as_posix == ".github/workflows/publish.yml.jinja"
-        and "publish" not in github_actions
-    ):
-        return True
-    return False
 
 
 def validate_package_name(
@@ -177,6 +153,29 @@ github_actions_choices = [
     ("lint", "Lint and format"),
     ("publish", "Publish to PyPI"),
 ]
+
+
+def should_skip_file(relative_path: str, answers: dict[str, Any]) -> bool:
+    github_actions = answers.get("github_actions", [])
+
+    if relative_path == "LICENSE.jinja" and answers.get("copyright_license") == "None":
+        return True
+    if (
+        relative_path == ".github/workflows/tests.yml.jinja"
+        and "tests" not in github_actions
+    ):
+        return True
+    if (
+        relative_path == ".github/workflows/lint.yml.jinja"
+        and "lint" not in github_actions
+    ):
+        return True
+    if (
+        relative_path == ".github/workflows/publish.yml.jinja"
+        and "publish" not in github_actions
+    ):
+        return True
+    return False
 
 
 def questions(env: Environment, destination: Path) -> list[Question]:
@@ -320,7 +319,6 @@ def questions(env: Environment, destination: Path) -> list[Question]:
         Question(
             key="copyright_license",
             prompt="Project license",
-            help="Select 'None' to skip generating a license file.",
             choices=license_choices,
             default="None",
         ),
@@ -349,28 +347,4 @@ extensions: Sequence[type[Extension]] = (
 )
 
 
-def apply(
-    *,
-    env: Environment,
-    template_dir: Path,
-    destination: Path,
-    answers: dict[str, Any],
-    style: Style,
-) -> Sequence[Path]:
-    """Render the `template/` directory into the destination using answers.
-
-    Also renders Jinja expressions in path names (folders/files).
-    Returns the list of created paths for Sprout to summarize.
-    """
-    template_root = template_dir / "template"
-
-    created = render_templates(
-        None,
-        template_root,
-        destination,
-        answers,
-        skip=should_skip,
-        render_paths=True,
-        extensions=extensions,
-    )
-    return list(created)
+template_dir = "template"
