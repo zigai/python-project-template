@@ -15,7 +15,7 @@ My personal template for Python projects.
 
 ## Requirements
 
-* Python 3.8+
+* Python 3.12 or higher
 * [sprout](https://github.com/zigai/sprout)
 * Git
 
