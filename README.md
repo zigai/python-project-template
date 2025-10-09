@@ -19,9 +19,7 @@ My personal template for Python projects.
 * [sprout](https://github.com/zigai/sprout)
 * Git
 
-## Quick Setup
-
-Create a new Python project:
+## Usage
 
 ```bash
 sprout "https://github.com/zigai/python-project-template.git" /path/to/your/project
@@ -36,7 +34,6 @@ your-project/
 ├── tests/
 │   └── test_your_package.py
 ├── .github/workflows/          
-│   └── publish.yml
 ├── pyproject.toml             
 ├── README.md                  
 ├── CONTRIBUTING.md             
