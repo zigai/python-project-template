@@ -1,25 +1,32 @@
 name: Tests
 on: [push, pull_request]
+
 jobs:
   tests:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [
         {%- for version in py_versions_range(python_min_version, python_max_version) %}
           "{{ version }}"{{ "," if not loop.last }}
         {%- endfor %}
         ]
+    runs-on: {% raw %}${{ matrix.os }}{% endraw %}
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v7
+
       {% raw %}
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: uv sync --extra test --python ${{ matrix.python-version }}
+
       - name: Run pytest
         run: uv run --python ${{ matrix.python-version }} pytest -v
       {% endraw %}
