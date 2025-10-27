@@ -11,7 +11,7 @@
 ![Supported versions](https://img.shields.io/badge/python-{{ python_min_version }}+-blue.svg)
 [![Downloads](https://static.pepy.tech/badge/{{ repo_name }})](https://pepy.tech/project/{{ repo_name }})
 {%- if copyright_license != "None" and is_github_repo %}
-[![license](https://img.shields.io/github/license/{{ github_username }}/{{ repo_name }}.svg)]({{ repository_url }}/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/{{ github_username }}/{{ repo_name }}.svg)]({{ repository_url }}/blob/main/LICENSE)
 {%- endif %}
 {%- endif %}
 
@@ -19,13 +19,9 @@
 
 ## Installation
 
-#### Using pip
-
 ```sh
 pip install {{ repo_name }}
 ```
-
-#### Using uv
 
 ```sh
 uv add {{ repo_name }}
@@ -34,7 +30,21 @@ uv add {{ repo_name }}
 #### From source
 
 ```sh
-pip install git+{{ repository_url }}.git
-# or
 uv add git+{{ repository_url }}.git
 ```
+
+```sh
+pip install git+{{ repository_url }}.git
+```
+
+{%- if copyright_license != "None" %}
+{%- set license_url = "LICENSE" %}
+{%- if is_github_repo %}
+{%- set license_url = repository_url ~ "/blob/master/LICENSE" %}
+{%- elif repository_url %}
+{%- set license_url = repository_url ~ "/LICENSE" %}
+{%- endif %}
+
+## License
+[{{ copyright_license }}]({{ license_url }})
+{%- endif %}
