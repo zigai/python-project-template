@@ -201,6 +201,23 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# AI Agent files to optionaly exclude
+# AGENTS.md
+# CLAUDE.md
+# .codex/
+# .cursorrules
+# .cursorrules.*
+# opencode.json
+# opencode.jsonc
+# .opencode-memory.db
+# .opencode/
+# .cursor/
+# .gemini/
+# .agents/
+# .specify/
+# .specify/**
+# openspec/
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
