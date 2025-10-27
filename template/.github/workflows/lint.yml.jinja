@@ -10,18 +10,14 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
-      # install the requested Python for linting
       - name: Set up Python
         run: uv python install {{ python_default_version }}
 
-      # install dev dependencies (ruff, mypy, pre-commit, etc)
       - name: Install dependencies
         run: uv sync --extra dev --python {{ python_default_version }}
 
-      # check formatting
       - name: Check formatting with Ruff
         run: uv run --python {{ python_default_version }} ruff format --check .
 
-      # lint / autofixable style issues (but don't write fixes in CI)
       - name: Run Ruff lint
         run: uv run --python {{ python_default_version }} ruff check .

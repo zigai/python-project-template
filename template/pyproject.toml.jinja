@@ -2,7 +2,13 @@
 name = "{{ package_name }}"
 version = "0.1.0"
 description = "{{ description }}"
-authors = [{ name = "{{ author_name }}", email = "{{ author_email }}" }]
+{%- if author_name or author_email %}
+authors = [{
+{%- if author_name %} name = "{{ author_name }}"{% endif %}
+{%- if author_name and author_email %}, {% endif %}
+{%- if author_email %} email = "{{ author_email }}"{% endif %}
+}]
+{%- endif %}
 {%- if copyright_license != "None" %}
 license = { file = "LICENSE" }
 {%- endif %}
@@ -61,7 +67,7 @@ keywords = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest", "coverage"]
 dev = ["pytest", "ruff", "pre-commit", "coverage", "mypy"]
 
 [project.urls]
