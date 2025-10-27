@@ -92,7 +92,7 @@ python = [
 
 [tool.hatch.envs.test.scripts]
 test = "pytest {args}"
-coverage = "coverage run -m pytest {args}"
+cov = "coverage run -m pytest {args}"
 
 [tool.hatch.build.targets.wheel]
 packages = ["{{ package_name }}"]

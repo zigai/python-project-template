@@ -51,7 +51,7 @@ spell:
     codespell
 
 # run all quality checks
-check: format lint coverage typecheck codespell
+check: format lint coverage typecheck spell
 
 # list available recipes
 help:
