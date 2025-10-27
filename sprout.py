@@ -161,7 +161,7 @@ def should_skip_file(relative_path: str, answers: dict[str, Any]) -> bool:
     if relative_path == "LICENSE.jinja" and answers.get("copyright_license") == "None":
         return True
     if (
-        relative_path == ".github/workflows/tests.yml.jinja"
+        relative_path == ".github/workflows/test.yml.jinja"
         and "tests" not in github_actions
     ):
         return True
