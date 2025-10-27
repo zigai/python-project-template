@@ -102,6 +102,12 @@ source = ["{{ package_name }}"]
 branch = true
 
 [tool.coverage.report]
+exclude_lines = [
+    'pragma: no cover',
+    'raise NotImplementedError',
+    'if TYPE_CHECKING:',
+    'if typing.TYPE_CHECKING:',
+]
 omit = [
     "tests/*",
     "tests/**",
@@ -218,3 +224,6 @@ known-first-party = ["{{ package_name }}", "tests"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.codespell]
+skip = '.git,uv.lock'
