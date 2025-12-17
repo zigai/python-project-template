@@ -3,11 +3,7 @@ name = "{{ package_name }}"
 version = "0.1.0"
 description = "{{ description }}"
 {%- if author_name or author_email %}
-authors = [{
-{%- if author_name %} name = "{{ author_name }}"{% endif %}
-{%- if author_name and author_email %}, {% endif %}
-{%- if author_email %} email = "{{ author_email }}"{% endif %}
-}]
+authors = [{{ "{" }}{%- if author_name -%}name = "{{ author_name }}"{%- endif -%}{%- if author_name and author_email -%}, {% endif -%}{%- if author_email -%}email = "{{ author_email }}"{%- endif -%}{{ "}" }}]
 {%- endif %}
 {%- if copyright_license != "None" %}
 license = { file = "LICENSE" }
