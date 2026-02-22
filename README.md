@@ -10,6 +10,7 @@ My personal template for Python projects.
 * **Code quality tools**: [ruff](https://docs.astral.sh/ruff/) for linting and formatting, pre-commit hooks
 * **Testing setup** with [pytest](https://docs.pytest.org/en/stable/) and [Hatch](https://hatch.pypa.io/latest/) for cross-version testing
 * **GitHub Actions integration**: optional workflows for linting, testing and PyPI publishing
+* **Conditional repo setup**: if `gh` is installed, optionally create a public/private GitHub repo
 * **Licenses from** [choosealicense.com](https://choosealicense.com/)
 * **Basic ```README.md```** with badges and installation instructions
 

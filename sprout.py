@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import re
+import shutil
+import subprocess
 from collections.abc import Sequence
 from datetime import date
 from pathlib import Path
@@ -37,6 +39,60 @@ class CurrentYearExtension(Extension):
     def __init__(self, environment: Environment):
         super().__init__(environment)
         environment.globals["current_year"] = date.today().year
+
+
+python_version_choices = [
+    ("3.8", "Python 3.8"),
+    ("3.9", "Python 3.9"),
+    ("3.10", "Python 3.10"),
+    ("3.11", "Python 3.11"),
+    ("3.12", "Python 3.12"),
+    ("3.13", "Python 3.13"),
+    ("3.14", "Python 3.14"),
+]
+
+license_choices = [
+    ("None", "No license"),
+    ("MIT", "MIT License"),
+    ("Apache-2.0", "Apache License 2.0"),
+    ("GPL-3.0", "GNU General Public License v3.0 only"),
+    ("BSD-3-Clause", 'BSD 3-Clause "New" or "Revised" License'),
+    ("Unlicense", "The Unlicense"),
+    ("GPL-2.0", "GNU General Public License v2.0 only"),
+    ("AGPL-3.0", "GNU Affero General Public License v3.0"),
+    ("LGPL-3.0", "GNU Lesser General Public License v3.0 only"),
+    ("LGPL-2.1", "GNU Lesser General Public License v2.1 only"),
+    ("BSD-2-Clause", 'BSD 2-Clause "Simplified" License'),
+    ("BSD-3-Clause-Clear", "BSD 3-Clause Clear License"),
+    ("BSL-1.0", "Boost Software License 1.0"),
+    ("CC-BY-4.0", "Creative Commons Attribution 4.0 International"),
+    ("CC-BY-SA-4.0", "Creative Commons Attribution Share Alike 4.0"),
+    ("CC0-1.0", "Creative Commons Zero v1.0 Universal"),
+    ("WTFPL", "Do What The F*ck You Want To Public License"),
+    ("AFL-3.0", "Academic Free License v3.0"),
+    ("Artistic-2.0", "Artistic License 2.0"),
+    ("ECL-2.0", "Educational Community License v2.0"),
+    ("EPL-1.0", "Eclipse Public License 1.0"),
+    ("EPL-2.0", "Eclipse Public License 2.0"),
+    ("EUPL-1.1", "European Union Public License 1.1"),
+    ("EUPL-1.2", "European Union Public License 1.2"),
+    ("ISC", "ISC License"),
+    ("LPPL-1.3c", "LaTeX Project Public License v1.3c"),
+    ("MPL-2.0", "Mozilla Public License 2.0"),
+    ("MS-PL", "Microsoft Public License"),
+    ("MS-RL", "Microsoft Reciprocal License"),
+    ("NCSA", "University of Illinois/NCSA Open Source License"),
+    ("OFL-1.1", "SIL Open Font License 1.1"),
+    ("OSL-3.0", "Open Software License 3.0"),
+    ("PostgreSQL", "PostgreSQL License"),
+    ("Zlib", "zlib License"),
+]
+
+github_actions_choices = [
+    ("tests", "Run tests"),
+    ("lint", "Lint and format"),
+    ("publish", "Publish to PyPI"),
+]
 
 
 def validate_package_name(
@@ -101,58 +157,102 @@ def _python_identifier(name: str) -> str:
     return sanitized
 
 
-python_version_choices = [
-    ("3.8", "Python 3.8"),
-    ("3.9", "Python 3.9"),
-    ("3.10", "Python 3.10"),
-    ("3.11", "Python 3.11"),
-    ("3.12", "Python 3.12"),
-    ("3.13", "Python 3.13"),
-    ("3.14", "Python 3.14"),
-]
+def _is_github_repo_url(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    return value.strip().startswith("https://github.com/")
 
-license_choices = [
-    ("None", "No license"),
-    ("MIT", "MIT License"),
-    ("Apache-2.0", "Apache License 2.0"),
-    ("GPL-3.0", "GNU General Public License v3.0 only"),
-    ("BSD-3-Clause", 'BSD 3-Clause "New" or "Revised" License'),
-    ("Unlicense", "The Unlicense"),
-    ("GPL-2.0", "GNU General Public License v2.0 only"),
-    ("AGPL-3.0", "GNU Affero General Public License v3.0"),
-    ("LGPL-3.0", "GNU Lesser General Public License v3.0 only"),
-    ("LGPL-2.1", "GNU Lesser General Public License v2.1 only"),
-    ("BSD-2-Clause", 'BSD 2-Clause "Simplified" License'),
-    ("BSD-3-Clause-Clear", "BSD 3-Clause Clear License"),
-    ("BSL-1.0", "Boost Software License 1.0"),
-    ("CC-BY-4.0", "Creative Commons Attribution 4.0 International"),
-    ("CC-BY-SA-4.0", "Creative Commons Attribution Share Alike 4.0"),
-    ("CC0-1.0", "Creative Commons Zero v1.0 Universal"),
-    ("WTFPL", "Do What The F*ck You Want To Public License"),
-    ("AFL-3.0", "Academic Free License v3.0"),
-    ("Artistic-2.0", "Artistic License 2.0"),
-    ("ECL-2.0", "Educational Community License v2.0"),
-    ("EPL-1.0", "Eclipse Public License 1.0"),
-    ("EPL-2.0", "Eclipse Public License 2.0"),
-    ("EUPL-1.1", "European Union Public License 1.1"),
-    ("EUPL-1.2", "European Union Public License 1.2"),
-    ("ISC", "ISC License"),
-    ("LPPL-1.3c", "LaTeX Project Public License v1.3c"),
-    ("MPL-2.0", "Mozilla Public License 2.0"),
-    ("MS-PL", "Microsoft Public License"),
-    ("MS-RL", "Microsoft Reciprocal License"),
-    ("NCSA", "University of Illinois/NCSA Open Source License"),
-    ("OFL-1.1", "SIL Open Font License 1.1"),
-    ("OSL-3.0", "Open Software License 3.0"),
-    ("PostgreSQL", "PostgreSQL License"),
-    ("Zlib", "zlib License"),
-]
 
-github_actions_choices = [
-    ("tests", "Run tests"),
-    ("lint", "Lint and format"),
-    ("publish", "Publish to PyPI"),
-]
+def _github_repo_target(answers: dict[str, Any]) -> str:
+    repository_url = str(answers.get("repository_url") or "").strip()
+    match = re.match(
+        r"^https://github\.com/(?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:\.git)?/?$",
+        repository_url,
+    )
+    if match:
+        owner = match.group("owner")
+        repo = match.group("repo")
+        return f"{owner}/{repo}"
+
+    repo_name = str(answers.get("repo_name") or "").strip()
+    return repo_name or "my-package"
+
+
+def _ensure_git_repo(destination: Path, *, console: Any) -> bool:
+    git_executable = shutil.which("git")
+    if git_executable is None:
+        console.print(
+            "[yellow]Git is not installed; skipping local repository initialization.[/yellow]"
+        )
+        return False
+
+    if (destination / ".git").exists():
+        return True
+
+    result = subprocess.run(
+        [git_executable, "init"],
+        cwd=destination,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0:
+        return True
+
+    details = result.stderr.strip() or result.stdout.strip() or "unknown error"
+    console.print(f"[yellow]Failed to initialize git repository: {details}[/yellow]")
+    return False
+
+
+def _create_github_repo(
+    destination: Path, answers: dict[str, Any], *, console: Any
+) -> None:
+    gh_executable = shutil.which("gh")
+    if gh_executable is None:
+        console.print(
+            "[yellow]GitHub CLI not found; skipping repository creation.[/yellow]"
+        )
+        return
+
+    visibility = str(answers.get("github_repo_visibility") or "public").strip().lower()
+    if visibility not in {"public", "private"}:
+        visibility = "public"
+
+    repo_target = _github_repo_target(answers)
+    description = str(answers.get("description") or "").strip()
+
+    command = [
+        gh_executable,
+        "repo",
+        "create",
+        repo_target,
+        f"--{visibility}",
+    ]
+
+    if description:
+        command.extend(["--description", description])
+
+    if _ensure_git_repo(destination, console=console):
+        command.extend(["--source", str(destination), "--remote", "origin"])
+    else:
+        console.print(
+            "[yellow]Proceeding to create GitHub repository without connecting the local folder.[/yellow]"
+        )
+
+    result = subprocess.run(
+        command,
+        cwd=destination,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0:
+        return
+
+    details = result.stderr.strip() or result.stdout.strip() or "unknown error"
+    console.print(f"[yellow]Failed to create GitHub repository: {details}[/yellow]")
+
+
+# Sprout manifest entrypoints
 
 
 def should_skip_file(relative_path: str, answers: dict[str, Any]) -> bool:
@@ -181,6 +281,7 @@ def should_skip_file(relative_path: str, answers: dict[str, Any]) -> bool:
 def questions(env: Environment, destination: Path) -> list[Question]:
     git_user_name = env.globals.get("git_user_name", "")
     git_user_email = env.globals.get("git_user_email", "")
+    gh_available = shutil.which("gh") is not None
 
     suggested_package = _python_identifier(destination.name)
 
@@ -296,6 +397,26 @@ def questions(env: Environment, destination: Path) -> list[Question]:
             default=default_repository_url,
             validators=[validate_repository_url],
         ),
+        Question.yes_no(
+            key="create_github_repo",
+            prompt="Create GitHub repository now?",
+            help_text="Uses GitHub CLI (`gh repo create`) after files are generated.",
+            default=False,
+            when=gh_available,
+        ),
+        Question(
+            key="github_repo_visibility",
+            prompt="GitHub repository visibility",
+            choices=[("public", "Public"), ("private", "Private")],
+            default="public",
+            when=lambda answers: bool(answers.get("create_github_repo")),
+        ),
+        Question.yes_no(
+            key="git_init",
+            prompt="Initialize a local git repository?",
+            default=True,
+            when=lambda answers: not bool(answers.get("create_github_repo")),
+        ),
         Question(
             key="python_min_version",
             prompt="Minimum supported Python version",
@@ -330,14 +451,42 @@ def questions(env: Environment, destination: Path) -> list[Question]:
             multiselect=True,
             default=[],
         ),
-        Question(
+        Question.yes_no(
             key="readme_badges",
             prompt="Include README badges?",
-            choices=[("yes", "Yes"), ("no", "No")],
-            default="yes",
-            parser=lambda value, answers: value.lower() in {"yes", "y", "true", "1"},
+            default=True,
         ),
     ]
+
+
+def apply(
+    *,
+    env: Environment,
+    template_dir: Path,
+    destination: Path,
+    answers: dict[str, Any],
+    console: Any,
+    render_templates: Any,
+) -> list[Path]:
+    created = render_templates(
+        env,
+        template_dir,
+        destination,
+        answers,
+        skip=should_skip_file,
+        render_paths=True,
+    )
+
+    if bool(answers.get("create_github_repo")):
+        if not _is_github_repo_url(answers.get("repository_url")):
+            console.print(
+                "[yellow]Repository URL is not a GitHub URL; GitHub repository will use repo name only.[/yellow]"
+            )
+        _create_github_repo(destination, answers, console=console)
+    elif bool(answers.get("git_init")):
+        _ensure_git_repo(destination, console=console)
+
+    return created
 
 
 extensions: Sequence[type[Extension]] = (
