@@ -204,8 +204,82 @@ def _ensure_git_repo(destination: Path, *, console: Any) -> bool:
     return False
 
 
+def _has_git_commits(destination: Path, *, git_executable: str) -> bool:
+    result = subprocess.run(
+        [git_executable, "rev-parse", "--verify", "HEAD"],
+        cwd=destination,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    return result.returncode == 0
+
+
+def _create_initial_commit(destination: Path, answers: dict[str, Any], *, console: Any) -> bool:
+    git_executable = shutil.which("git")
+    if git_executable is None:
+        console.print("[yellow]Git is not installed; skipping initial commit.[/yellow]")
+        return False
+
+    if not _ensure_git_repo(destination, console=console):
+        return False
+
+    add_result = subprocess.run(
+        [git_executable, "add", "--all"],
+        cwd=destination,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if add_result.returncode != 0:
+        details = add_result.stderr.strip() or add_result.stdout.strip() or "unknown error"
+        console.print(f"[yellow]Failed to stage files for initial commit: {details}[/yellow]")
+        return _has_git_commits(destination, git_executable=git_executable)
+
+    staged_diff_result = subprocess.run(
+        [git_executable, "diff", "--cached", "--quiet", "--exit-code"],
+        cwd=destination,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if staged_diff_result.returncode == 0:
+        return _has_git_commits(destination, git_executable=git_executable)
+    if staged_diff_result.returncode != 1:
+        details = (
+            staged_diff_result.stderr.strip()
+            or staged_diff_result.stdout.strip()
+            or "unknown error"
+        )
+        console.print(f"[yellow]Failed to inspect staged changes: {details}[/yellow]")
+        return _has_git_commits(destination, git_executable=git_executable)
+
+    commit_command: list[str] = [git_executable]
+    author_name = str(answers.get("author_name") or "").strip()
+    author_email = str(answers.get("author_email") or "").strip()
+    if author_name:
+        commit_command.extend(["-c", f"user.name={author_name}"])
+    if author_email:
+        commit_command.extend(["-c", f"user.email={author_email}"])
+    commit_command.extend(["commit", "-m", "chore: initialize project"])
+
+    commit_result = subprocess.run(
+        commit_command,
+        cwd=destination,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if commit_result.returncode == 0:
+        return True
+
+    details = commit_result.stderr.strip() or commit_result.stdout.strip() or "unknown error"
+    console.print(f"[yellow]Failed to create initial commit: {details}[/yellow]")
+    return _has_git_commits(destination, git_executable=git_executable)
+
+
 def _create_github_repo(
-    destination: Path, answers: dict[str, Any], *, console: Any
+    destination: Path, answers: dict[str, Any], *, console: Any, push: bool = False
 ) -> None:
     gh_executable = shutil.which("gh")
     if gh_executable is None:
@@ -234,6 +308,8 @@ def _create_github_repo(
 
     if _ensure_git_repo(destination, console=console):
         command.extend(["--source", str(destination), "--remote", "origin"])
+        if push:
+            command.append("--push")
     else:
         console.print(
             "[yellow]Proceeding to create GitHub repository without connecting the local folder.[/yellow]"
@@ -400,7 +476,10 @@ def questions(env: Environment, destination: Path) -> list[Question]:
         Question.yes_no(
             key="create_github_repo",
             prompt="Create GitHub repository now?",
-            help_text="Uses GitHub CLI (`gh repo create`) after files are generated.",
+            help_text=(
+                "Uses GitHub CLI (`gh repo create`) after files are generated and pushes "
+                "the initial commit when available."
+            ),
             default=False,
             when=gh_available,
         ),
@@ -413,7 +492,7 @@ def questions(env: Environment, destination: Path) -> list[Question]:
         ),
         Question.yes_no(
             key="git_init",
-            prompt="Initialize a local git repository?",
+            prompt="Initialize a local git repository and create an initial commit?",
             default=True,
             when=lambda answers: not bool(answers.get("create_github_repo")),
         ),
@@ -482,9 +561,10 @@ def apply(
             console.print(
                 "[yellow]Repository URL is not a GitHub URL; GitHub repository will use repo name only.[/yellow]"
             )
-        _create_github_repo(destination, answers, console=console)
+        has_commits = _create_initial_commit(destination, answers, console=console)
+        _create_github_repo(destination, answers, console=console, push=has_commits)
     elif bool(answers.get("git_init")):
-        _ensure_git_repo(destination, console=console)
+        _create_initial_commit(destination, answers, console=console)
 
     return created
 
