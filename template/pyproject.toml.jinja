@@ -63,8 +63,17 @@ keywords = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "coverage"]
-dev = ["pytest", "coverage", "ruff", "pre-commit", "mypy", "codespell"]
+test = ["pytest>=8.4.2", "coverage>=7.13.1"]
+dev = [
+    "pytest>=8.4.2",
+    "coverage>=7.13.1",
+    "ruff==0.15.8",
+    "pre-commit>=4.5.1",
+    "mypy>=1.19.1",
+    "codespell>=2.4.1",
+    "rattle-lint>=1.0.4",
+    "rattle-blank-lines>=0.2.2",
+]
 
 [project.urls]
 Repository = "{{ repository_url }}"
@@ -124,6 +133,11 @@ warn_return_any = true
 warn_unused_configs = true
 strict_equality = true
 ignore_missing_imports = true
+
+[tool.rattle]
+root = true
+enable = ["rattle_blank_lines.rules"]
+disable = ["rattle.rules"]
 
 [tool.ruff]
 line-length = 100
