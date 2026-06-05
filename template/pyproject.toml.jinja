@@ -69,10 +69,9 @@ dev = [
     "coverage>=7.13.1",
     "ruff==0.15.8",
     "pre-commit>=4.5.1",
-    "mypy>=1.19.1",
+    "pyrefly>=1.0.0",
     "codespell>=2.4.1",
-    "rattle-lint>=1.0.4",
-    "rattle-blank-lines>=0.2.4",
+    "rattle-lint>=2.1.1",
 ]
 
 [project.urls]
@@ -118,25 +117,23 @@ omit = [
     "tests/**",
 ]
 
-[tool.mypy]
-python_version = "{{ python_min_version }}"
-files = ["{{ package_name }}"]
-exclude = ["^tests/"]
-
-disallow_untyped_defs = true
-disallow_untyped_calls = true
-disallow_any_generics = true
-no_implicit_optional = true
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_return_any = true
-warn_unused_configs = true
-strict_equality = true
-ignore_missing_imports = true
+[tool.pyrefly]
+project-includes = ["{{ package_name }}"]
+project-excludes = ["tests/**"]
+search-path = ["."]
+disable-search-path-heuristics = true
+python-version = "{{ python_min_version }}"
+enabled-ignores = ["type", "pyrefly"]
+use-ignore-files = true
+check-unannotated-defs = true
+infer-return-types = "checked"
+infer-with-first-use = true
+strict-callable-subtyping = false
+spec-compliant-overloads = false
 
 [tool.rattle]
 root = true
-enable = ["rattle_blank_lines.rules"]
+enable = ["blank-lines"]
 disable = ["rattle.rules"]
 
 [tool.ruff]
