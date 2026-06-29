@@ -7,6 +7,9 @@
 {%- if 'tests' in github_actions %}
 [![Tests]({{ repository_url }}/actions/workflows/test.yml/badge.svg)]({{ repository_url }}/actions/workflows/test.yml)
 {%- endif %}
+{%- if setup_readthedocs %}
+[![Documentation Status](https://readthedocs.org/projects/{{ repo_name }}/badge/?version=latest)](https://{{ repo_name }}.readthedocs.io/en/latest/?badge=latest)
+{%- endif %}
 [![PyPI version](https://badge.fury.io/py/{{ repo_name }}.svg)](https://badge.fury.io/py/{{ repo_name }})
 ![Supported versions](https://img.shields.io/badge/python-{{ python_min_version }}+-blue.svg)
 [![Downloads](https://static.pepy.tech/badge/{{ repo_name }})](https://pepy.tech/project/{{ repo_name }})
@@ -16,7 +19,11 @@
 {%- endif %}
 
 {{ description }}
+{% if setup_readthedocs %}
+## Documentation
 
+Documentation is available on [Read the Docs](https://{{ repo_name }}.readthedocs.io/).
+{% endif %}
 ## Installation
 
 ```sh
@@ -27,7 +34,7 @@ pip install {{ repo_name }}
 uv add {{ repo_name }}
 ```
 
-#### From source
+### From source
 
 ```sh
 uv add git+{{ repository_url }}.git

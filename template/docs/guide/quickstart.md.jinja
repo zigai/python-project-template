@@ -1,0 +1,50 @@
+# Quickstart
+
+Install the package from PyPI:
+
+```console
+$ python -m pip install {{ repo_name }}
+```
+
+Or with uv:
+
+```console
+$ uv add {{ repo_name }}
+```
+
+## Import
+
+```python
+import {{ package_name }}
+```
+
+## Development install
+
+Clone the repository and sync the development environment:
+
+```console
+$ git clone {{ repository_url }}
+$ cd {{ repo_name }}
+$ just dev
+```
+
+Run checks and coverage with:
+
+```console
+$ just check
+$ just coverage
+```
+
+Build the documentation locally with:
+
+```console
+$ just docs
+```
+
+Build and serve the documentation locally with:
+
+```console
+$ just docs-serve
+```
+
+The local server prints the URL, by default `http://127.0.0.1:8000/`. If that port is already in use, it tries the next available port.

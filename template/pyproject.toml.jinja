@@ -73,30 +73,45 @@ dev = [
     "codespell>=2.4.1",
     "rattle-lint>=2.4.2",
 ]
+{% if setup_readthedocs %}
+docs = [
+    "beautifulsoup4",
+    "furo",
+    "jinja2 == 3.1.6",
+    "myst-parser == 4.0.1",
+    "sphinx == 8.0.2",
+    "sphinx-copybutton",
+    "sphinx-notfound-page",
+    "sphinxcontrib-mermaid",
+    "sphinxext-opengraph",
+]
+{% endif %}
+
+[dependency-groups]
+test = ["pytest>=8.4.2", "coverage>=7.13.1"]
+dev = [
+    { include-group = "test" },
+    "ruff==0.15.8",
+    "pre-commit>=4.5.1",
+    "pyrefly>=1.0.0",
+    "codespell>=2.4.1",
+    "rattle-lint>=2.4.2",
+]
+
+[tool.uv]
+default-groups = ["test"]
 
 [project.urls]
 Repository = "{{ repository_url }}"
 Issues = "{{ repository_url }}/issues"
 Homepage = "{{ repository_url }}"
+{% if setup_readthedocs %}
+Documentation = "https://{{ repo_name }}.readthedocs.io"
+{% endif %}
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.hatch.envs.test]
-features = ["test"]
-installer = "uv"
-
-[[tool.hatch.envs.test.matrix]]
-python = [
-{%- for version in py_versions_range(python_min_version, python_max_version) %}
-    "{{ version }}",
-{%- endfor %}
-]
-
-[tool.hatch.envs.test.scripts]
-test = "pytest {args}"
-cov = "coverage run -m pytest {args}"
 
 [tool.hatch.build.targets.wheel]
 packages = ["{{ package_name }}"]
@@ -229,6 +244,10 @@ exclude = ["build"]
     "F401", # Unused import
     "E402", # Module import not at top of file
 ]
+{% if setup_readthedocs %}
+"docs/conf.py" = ["A001", "INP001"]
+"docs/_ext/darker_modern_pygments.py" = ["RUF012"]
+{% endif %}
 "**/tests/**/*.py" = [
     "S104",
     "S105",
