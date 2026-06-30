@@ -5,7 +5,7 @@ My personal template for Python projects.
 ## Features
 
 * **Modern Python tooling** with [uv](https://docs.astral.sh/uv/) for dependency management and environment setup
-* **Generated `pyproject.toml`** with project metadata, dependencies, tool config, and build settings
+* **Generated `pyproject.toml`** with metadata, dependencies, and uv build config
 * **Just recipes** with [just](https://github.com/casey/just) for checking, coverage, testing, linting, formatting, and building
 * **Code quality tooling** with [ruff](https://docs.astral.sh/ruff/), [pyrefly](https://pyrefly.org/), and pre-commit hooks
 * **Testing setup** with [pytest](https://docs.pytest.org/en/stable/), coverage, and uv-powered local cross-version test runs from `.python-versions`
