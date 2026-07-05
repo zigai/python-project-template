@@ -1,3 +1,10 @@
+{%- set SPDX_LICENSE_EXPRESSION_MAP = {
+    "GPL-3.0": "GPL-3.0-only",
+    "GPL-2.0": "GPL-2.0-only",
+    "AGPL-3.0": "AGPL-3.0-only",
+    "LGPL-3.0": "LGPL-3.0-only",
+    "LGPL-2.1": "LGPL-2.1-only"
+} -%}
 [project]
 name = "{{ package_name }}"
 version = "0.1.0"
@@ -6,46 +13,14 @@ description = "{{ description }}"
 authors = [{{ "{" }}{%- if author_name -%}name = "{{ author_name }}"{%- endif -%}{%- if author_name and author_email -%}, {% endif -%}{%- if author_email -%}email = "{{ author_email }}"{%- endif -%}{{ "}" }}]
 {%- endif %}
 {%- if copyright_license != "None" %}
-license = { file = "LICENSE" }
+license = "{{ SPDX_LICENSE_EXPRESSION_MAP.get(copyright_license, copyright_license) }}"
+license-files = ["LICENSE"]
 {%- endif %}
 readme = "README.md"
 requires-python = ">={{ python_min_version }}"
 dependencies = []
 
-{%- set LICENSE_TROVE_MAP = {
-    "MIT": "License :: OSI Approved :: MIT License",
-    "Apache-2.0": "License :: OSI Approved :: Apache Software License",
-    "GPL-3.0": "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "GPL-2.0": "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
-    "AGPL-3.0": "License :: OSI Approved :: GNU Affero General Public License v3",
-    "LGPL-3.0": "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
-    "LGPL-2.1": "License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)",
-    "BSD-2-Clause": "License :: OSI Approved :: BSD License",
-    "BSD-3-Clause": "License :: OSI Approved :: BSD License",
-    "BSD-3-Clause-Clear": "License :: OSI Approved :: BSD License",
-    "BSL-1.0": "License :: OSI Approved :: Boost Software License 1.0 (BSL-1.0)",
-    "PostgreSQL": "License :: OSI Approved :: PostgreSQL License",
-    "MPL-2.0": "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
-    "EPL-1.0": "License :: OSI Approved :: Eclipse Public License 1.0 (EPL-1.0)",
-    "EPL-2.0": "License :: OSI Approved :: Eclipse Public License 2.0 (EPL-2.0)",
-    "Artistic-2.0": "License :: OSI Approved :: Artistic License",
-    "AFL-3.0": "License :: OSI Approved :: Academic Free License (AFL)",
-    "ISC": "License :: OSI Approved :: ISC License (ISCL)",
-    "MS-PL": "License :: OSI Approved :: Microsoft Public License (Ms-PL)",
-    "MS-RL": "License :: OSI Approved :: Microsoft Reciprocal License (Ms-RL)",
-    "NCSA": "License :: OSI Approved :: University of Illinois/NCSA Open Source License",
-    "OFL-1.1": "License :: OSI Approved :: SIL Open Font License 1.1 (OFL-1.1)",
-    "CC0-1.0": "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
-    "CC-BY-4.0": "License :: Creative Commons Attribution 4.0 International",
-    "CC-BY-SA-4.0": "License :: Creative Commons Attribution Share Alike 4.0 International",
-    "WTFPL": "License :: OSI Approved :: Do What The F*ck You Want To Public License (WTFPL)"
-} -%}
-{%- set license_classifier = LICENSE_TROVE_MAP.get(copyright_license) %}
-
 classifiers = [
-{%- if license_classifier %}
-    "{{ license_classifier }}",
-{%- endif %}
     "Typing :: Typed",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
