@@ -16,7 +16,7 @@
 ![Supported versions](https://img.shields.io/badge/python-{{ python_min_version }}+-blue.svg)
 [![Downloads](https://static.pepy.tech/badge/{{ repo_name }})](https://pepy.tech/project/{{ repo_name }})
 {%- if copyright_license != "None" and is_github_repo %}
-[![License](https://img.shields.io/github/license/{{ repository_slug }}.svg)]({{ normalized_repository_url }}/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/{{ repository_slug }}.svg)](LICENSE)
 {%- endif %}
 {%- endif %}
 
@@ -48,9 +48,7 @@ pip install git+{{ normalized_repository_url }}.git
 
 {%- if copyright_license != "None" %}
 {%- set license_url = "LICENSE" %}
-{%- if is_github_repo %}
-{%- set license_url = normalized_repository_url ~ "/blob/main/LICENSE" %}
-{%- elif normalized_repository_url %}
+{%- if normalized_repository_url and not is_github_repo %}
 {%- set license_url = normalized_repository_url ~ "/LICENSE" %}
 {%- endif %}
 
