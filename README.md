@@ -24,13 +24,13 @@ My personal template for Python projects.
 
 ## Usage
 
-Run the template directly:
+Create a project directly:
 
 ```bash
 sprout new "https://github.com/zigai/python-project-template.git" /path/to/your/project
 ```
 
-Or register a trusted name once and reuse it:
+Or add the template for reuse:
 
 ```bash
 sprout add zigai/python-project-template --name python
