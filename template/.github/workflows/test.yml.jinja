@@ -15,10 +15,10 @@ jobs:
     runs-on: {% raw %}${{ matrix.os }}{% endraw %}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@v8
 
       {% raw %}
       - name: Set up Python ${{ matrix.python-version }}
