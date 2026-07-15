@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-import shutil
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
@@ -49,8 +48,6 @@ class PythonVersionExtension(Extension):
 
 
 python_version_choices = [
-    ("3.8", "Python 3.8"),
-    ("3.9", "Python 3.9"),
     ("3.10", "Python 3.10"),
     ("3.11", "Python 3.11"),
     ("3.12", "Python 3.12"),
@@ -133,8 +130,6 @@ def should_skip_file(relative_path: str, answers: dict[str, Any]) -> bool:
 def questions(env: Environment, destination: Path) -> list[Question]:
     git_user_name = env.globals.get("git_user_name", "")
     git_user_email = env.globals.get("git_user_email", "")
-    gh_available = shutil.which("gh") is not None
-
     suggested_package = _python_identifier(destination.name)
 
     def version_tuple(value: str | None) -> tuple[int, int] | None:
@@ -179,7 +174,7 @@ def questions(env: Environment, destination: Path) -> list[Question]:
 
     def default_python_max_version(answers: dict[str, Any]) -> str:
         choices = python_max_version_choices(answers)
-        preferred = "3.13"
+        preferred = "3.14"
         available_values = [value for value, _ in choices]
         if preferred in available_values:
             return preferred
@@ -238,7 +233,7 @@ def questions(env: Environment, destination: Path) -> list[Question]:
         Question(
             key="description",
             prompt="Project description",
-            default=" ",
+            default="",
             parser=lambda value, answers: value.strip(),
         ),
         Question(
@@ -249,13 +244,12 @@ def questions(env: Environment, destination: Path) -> list[Question]:
         ),
         Question.yes_no(
             key="create_github_repo",
-            prompt="Create GitHub repository now?",
+            prompt="Create a GitHub repository now?",
             help_text=(
                 "Uses GitHub CLI (`gh repo create`) after files are generated and pushes "
                 "the initial commit when available."
             ),
             default=False,
-            when=gh_available,
         ),
         Question(
             key="github_repo_visibility",
