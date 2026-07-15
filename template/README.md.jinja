@@ -1,11 +1,13 @@
 # {{ package_name }}
 
+{%- set normalized_repository_url = repository_url.removesuffix(".git").rstrip("/") %}
+{%- set is_github_repo = normalized_repository_url.startswith("https://github.com/") %}
+{%- set repository_slug = normalized_repository_url.removeprefix("https://github.com/") %}
+
 {%- if readme_badges %}
 
-{%- set is_github_repo = repository_url.startswith("https://github.com/") %}
-
-{%- if 'tests' in github_actions %}
-[![Tests]({{ repository_url }}/actions/workflows/test.yml/badge.svg)]({{ repository_url }}/actions/workflows/test.yml)
+{%- if is_github_repo and 'tests' in github_actions %}
+[![Tests]({{ normalized_repository_url }}/actions/workflows/test.yml/badge.svg)]({{ normalized_repository_url }}/actions/workflows/test.yml)
 {%- endif %}
 {%- if setup_readthedocs %}
 [![Documentation Status](https://readthedocs.org/projects/{{ repo_name }}/badge/?version=latest)](https://{{ repo_name }}.readthedocs.io/en/latest/?badge=latest)
@@ -14,7 +16,7 @@
 ![Supported versions](https://img.shields.io/badge/python-{{ python_min_version }}+-blue.svg)
 [![Downloads](https://static.pepy.tech/badge/{{ repo_name }})](https://pepy.tech/project/{{ repo_name }})
 {%- if copyright_license != "None" and is_github_repo %}
-[![license](https://img.shields.io/github/license/{{ github_username }}/{{ repo_name }}.svg)]({{ repository_url }}/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/{{ repository_slug }}.svg)]({{ normalized_repository_url }}/blob/main/LICENSE)
 {%- endif %}
 {%- endif %}
 
@@ -37,19 +39,19 @@ uv add {{ repo_name }}
 ### From source
 
 ```sh
-uv add git+{{ repository_url }}.git
+uv add git+{{ normalized_repository_url }}.git
 ```
 
 ```sh
-pip install git+{{ repository_url }}.git
+pip install git+{{ normalized_repository_url }}.git
 ```
 
 {%- if copyright_license != "None" %}
 {%- set license_url = "LICENSE" %}
 {%- if is_github_repo %}
-{%- set license_url = repository_url ~ "/blob/master/LICENSE" %}
-{%- elif repository_url %}
-{%- set license_url = repository_url ~ "/LICENSE" %}
+{%- set license_url = normalized_repository_url ~ "/blob/main/LICENSE" %}
+{%- elif normalized_repository_url %}
+{%- set license_url = normalized_repository_url ~ "/LICENSE" %}
 {%- endif %}
 
 ## License
