@@ -4,16 +4,16 @@ My personal template for Python projects.
 
 ## Features
 
-* **Modern Python tooling** with [uv](https://docs.astral.sh/uv/) for dependency management and environment setup
-* **Generated `pyproject.toml`** with metadata, dependencies, and uv build config
-* **Just recipes** with [just](https://github.com/casey/just) for checking, coverage, testing, linting, formatting, and building
-* **Code quality tooling** with [ruff](https://docs.astral.sh/ruff/), [pyrefly](https://pyrefly.org/), and pre-commit hooks
-* **Testing setup** with [pytest](https://docs.pytest.org/en/stable/), coverage, and uv-powered local cross-version test runs from `.python-versions`
-* **Optional GitHub Actions workflows** for linting, testing, and PyPI publishing
-* **Optional GitHub repository setup** through [GitHub CLI](https://cli.github.com/)
-* **License selection** using [choosealicense.com](https://choosealicense.com/) license text
-* **Generated `README.md`** with badges and installation instructions
-* **Optional documentation setup** with Read the Docs, Sphinx, Furo, MyST, API docs, and project links
+* [uv](https://docs.astral.sh/uv/) dependency management and an `uv_build` package backend
+* A generated `pyproject.toml` with package metadata, dependency groups, project links, and tool configuration
+* [just](https://github.com/casey/just) recipes for environment setup, checks, tests, coverage, formatting, builds, and documentation
+* Code quality checks with [ruff](https://docs.astral.sh/ruff/), [pyrefly](https://pyrefly.org/), Codespell, Rattle, and pre-commit
+* [pytest](https://docs.pytest.org/en/stable/) and coverage, with local tests across the selected Python version range
+* GitHub Actions workflows for linting, tests, and PyPI publishing
+* GitHub repository creation through [GitHub CLI](https://cli.github.com/)
+* Read the Docs setup using Sphinx, Furo, MyST, and generated API documentation
+* Destination-aware defaults using prior answers, Git configuration, and the detected GitHub identity
+* README badges and license selection using [choosealicense.com](https://choosealicense.com/) text
 
 ## Requirements
 
@@ -24,8 +24,17 @@ My personal template for Python projects.
 
 ## Usage
 
+Run the template directly:
+
 ```bash
-sprout "https://github.com/zigai/python-project-template.git" /path/to/your/project
+sprout new "https://github.com/zigai/python-project-template.git" /path/to/your/project
+```
+
+Or register a trusted name once and reuse it:
+
+```bash
+sprout add zigai/python-project-template --name python
+sprout new python /path/to/your/project
 ```
 
 ## Generated Project Structure
@@ -38,22 +47,17 @@ your-project/
 ├── .github/workflows/          # optional selected workflows
 ├── .python-version             # default local Python version
 ├── .python-versions            # local test matrix Python versions
+├── .editorconfig
 ├── .pre-commit-config.yaml
-├── pyproject.toml             
-├── README.md                  
-├── CONTRIBUTING.md             
+├── pyproject.toml
+├── README.md
+├── CONTRIBUTING.md
 ├── docs/                       # optional Read the Docs site
 ├── .readthedocs.yaml           # optional Read the Docs config
-├── Justfile                    
+├── Justfile
 ├── LICENSE                     # omitted when no license is selected
-└── .gitignore                  
+└── .gitignore
 ```
-
-## Similar Templates
-
-* [cookiecutter-uv](https://github.com/fpgmaas/cookiecutter-uv)
-* [copier-uv](https://github.com/pawamoy/copier-uv)
-* [python-copier-template](https://github.com/DiamondLightSource/python-copier-template)
 
 ## License
 
