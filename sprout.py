@@ -9,21 +9,23 @@ from jinja2 import Environment
 from jinja2.ext import Extension
 
 from sprout import (
+    SPDX_LICENSE_CHOICES,
     CurrentYearExtension,
     GitDefaultsExtension,
     ManifestContext,
     Question,
-    validate_repository_url,
-)
-from sprout.cli import render_templates as sprout_render_templates
-from sprout.project import (
-    SPDX_LICENSE_CHOICES,
     github_repository_url,
     run_git_post_actions,
     should_skip_license_file,
     validate_repository_name,
+    validate_repository_url,
 )
-from sprout.prompt import console as sprout_console
+from sprout import (
+    console as sprout_console,
+)
+from sprout import (
+    render_templates as sprout_render_templates,
+)
 
 
 class PythonVersionExtension(Extension):
@@ -310,6 +312,10 @@ def questions(env: Environment, destination: Path) -> list[Question]:
             default=True,
         ),
     ]
+
+
+def title(context: ManifestContext) -> str:
+    return f"Generating a Python project in {context.destination}"
 
 
 def apply(context: ManifestContext) -> list[Path]:
