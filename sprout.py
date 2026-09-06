@@ -65,6 +65,12 @@ github_actions_choices = [
     ("publish", "Publish to PyPI"),
 ]
 
+PROJECT_TYPE_CHOICES = [
+    ("library", "Library only"),
+    ("cli", "Command-line executable only"),
+    ("both", "Library and command-line executable"),
+]
+
 
 def validate_package_name(value: str, answers: dict[str, Any]) -> tuple[bool, str | None]:
     name = value.strip()
@@ -125,6 +131,8 @@ def should_skip_file(relative_path: str, answers: dict[str, Any]) -> bool:
     if relative_path == ".readthedocs.yaml.jinja" and not answers.get("setup_readthedocs"):
         return True
     if relative_path.startswith("docs/") and not answers.get("setup_readthedocs"):
+        return True
+    if relative_path.endswith("/cli.py.jinja") and answers.get("project_type") == "library":
         return True
     return False
 
@@ -237,6 +245,12 @@ def questions(env: Environment, destination: Path) -> list[Question]:
             prompt="Project description",
             default="",
             parser=lambda value, answers: value.strip(),
+        ),
+        Question(
+            key="project_type",
+            prompt="Project type",
+            choices=PROJECT_TYPE_CHOICES,
+            default="library",
         ),
         Question(
             key="repository_url",

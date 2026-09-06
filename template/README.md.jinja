@@ -26,6 +26,14 @@
 
 Documentation is available on [Read the Docs](https://{{ repo_name }}.readthedocs.io/).
 {% endif %}
+{% if project_type in ['cli', 'both'] %}
+## CLI Usage
+
+```sh
+uv tool install {{ repo_name }}
+{{ repo_name }} --help
+```
+{% endif %}
 ## Installation
 
 ```sh

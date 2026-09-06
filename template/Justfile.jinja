@@ -87,6 +87,15 @@ test *args: _require-uv
 # build the package
 build: _require-uv
   uv build
+{% if project_type in ['cli', 'both'] %}
+# install the CLI executable to ~/.local/bin
+install: _require-uv
+  uv tool install --editable .
+
+# run the command-line interface
+run *args: _require-uv
+  uv run {{ repo_name }} {% raw %}{{args}}{% endraw %}
+{% endif %}
 {% if setup_readthedocs %}
 # build the documentation site locally
 docs: _require-uv

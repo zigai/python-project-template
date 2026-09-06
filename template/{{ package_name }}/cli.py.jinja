@@ -1,0 +1,18 @@
+"""Command-line interface for {{ package_name }}."""
+
+from __future__ import annotations
+
+import argparse
+import sys
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="{{ description or package_name }}")
+    parser.add_argument("--version", action="version", version="%(prog)s 0.1.0")
+    parser.parse_args(argv)
+    print("Hello from {{ repo_name }}!")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
