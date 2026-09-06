@@ -42,15 +42,15 @@ keywords = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=9.1.1", "coverage>=7.15.1"]
+test = ["pytest>=9.1.1", "coverage>=7.16.0"]
 dev = [
     "pytest>=9.1.1",
-    "coverage>=7.15.1",
-    "ruff==0.16.1",
-    "pre-commit>=4.6.0",
-    "pyrefly>=1.1.1",
+    "coverage>=7.16.0",
+    "ruff==0.16.6",
+    "pre-commit>=4.6.2",
+    "pyrefly>=1.2.0",
     "codespell>=2.4.3",
-    "rattle-lint>=2.6.0",
+    "rattle-lint>=2.7.1",
 ]
 {% if setup_readthedocs %}
 docs = [
@@ -67,14 +67,14 @@ docs = [
 {% endif %}
 
 [dependency-groups]
-test = ["pytest>=9.1.1", "coverage>=7.15.1"]
+test = ["pytest>=9.1.1", "coverage>=7.16.0"]
 dev = [
     { include-group = "test" },
-    "ruff==0.16.1",
-    "pre-commit>=4.6.0",
-    "pyrefly>=1.1.1",
+    "ruff==0.16.6",
+    "pre-commit>=4.6.2",
+    "pyrefly>=1.2.0",
     "codespell>=2.4.3",
-    "rattle-lint>=2.6.0",
+    "rattle-lint>=2.7.1",
 ]
 
 [tool.uv]
