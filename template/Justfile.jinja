@@ -15,10 +15,6 @@ lint: _require-uv
 format: _require-uv
   uv run --group dev ruff format .
 
-# check code formatting without modifying files
-format-check: _require-uv
-  uv run --group dev ruff format --check .
-
 # fix automatically fixable linting issues
 fix: _require-uv
   uv run --group dev ruff check --fix .
@@ -192,7 +188,8 @@ spell: _require-uv
   uv run --group dev codespell
 
 # run all non-mutating quality checks
-check: lint format-check test typecheck
+check: lint test typecheck
+  uv run --group dev ruff format --check .
 
 # list available commands
 help:
