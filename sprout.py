@@ -66,9 +66,8 @@ github_actions_choices = [
 ]
 
 PROJECT_TYPE_CHOICES = [
-    ("library", "Library only"),
-    ("cli", "Command-line executable only"),
-    ("both", "Library and command-line executable"),
+    ("library", "Library"),
+    ("cli", "Command-line tool (CLI)"),
 ]
 
 
@@ -132,7 +131,7 @@ def should_skip_file(relative_path: str, answers: dict[str, Any]) -> bool:
         return True
     if relative_path.startswith("docs/") and not answers.get("setup_readthedocs"):
         return True
-    if relative_path.endswith("/cli.py.jinja") and answers.get("project_type") == "library":
+    if relative_path.endswith("/cli.py.jinja") and answers.get("project_type") != "cli":
         return True
     return False
 

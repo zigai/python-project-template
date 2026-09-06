@@ -19,7 +19,7 @@ license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">={{ python_min_version }}"
 dependencies = []
-{% if project_type in ['cli', 'both'] %}
+{% if project_type == 'cli' %}
 [project.scripts]
 {{ repo_name }} = "{{ package_name }}.cli:main"
 {% endif %}

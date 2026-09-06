@@ -87,7 +87,7 @@ test *args: _require-uv
 # build the package
 build: _require-uv
   uv build
-{% if project_type in ['cli', 'both'] %}
+{% if project_type == 'cli' %}
 # install the CLI executable to ~/.local/bin
 install: _require-uv
   uv tool install --editable .
