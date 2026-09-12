@@ -51,25 +51,19 @@ Usage: sprout new [options] TEMPLATE DESTINATION
 Generate a project from a Sprout manifest.
 
 Positional arguments:
-  TEMPLATE              Trusted name, local path, or Git repository containing
-                        sprout.py
+  TEMPLATE              Trusted name, local path, or Git repository containing sprout.py
   DESTINATION           Target directory for the generated project
 
 Options:
   --help                                 Show this help message and exit
-  --force                                Overwrite files in the destination
-                                         directory if they already exist
+  --force                                Overwrite files in the destination directory if they already exist
 
 Project:
-  --package-name <name>                  Python package name - Use a valid
-                                         Python identifier (snake_case).
-  --repo-name <name>                     Repository name - Typically the
-                                         package name with dashes.
-  --project-type <type>                  Project type (choices: library, cli)
-                                         [default: library]
-  --python-min-version <version>         Minimum supported Python version
-                                         (choices: 3.10, 3.11, 3.12, 3.13,
-                                         3.14) [default: 3.10]
+  --package-name <name>                  Python package name - Use a valid Python identifier (snake_case).
+  --repo-name <name>                     Repository name - Typically the package name with dashes.
+  --project-type <type>                  Project type (choices: library, cli) [default: library]
+  --python-min-version <version>         Minimum supported Python version (choices: 3.10, 3.11, 3.12, 3.13, 3.14)
+                                         [default: 3.10]
   --python-max-version <version>         Maximum supported Python version
   --python-default-version <version>     Default development Python version
 
@@ -80,32 +74,23 @@ Metadata:
   --repository-url <url>                 Repository URL
 
 Git:
-  --[no-]create-github-repo              Create a GitHub repository now - Uses
-                                         GitHub CLI (`gh repo create`) after
-                                         files are generated and pushes the
-                                         initial commit when available.
+  --[no-]create-github-repo              Create a GitHub repository now - Uses GitHub CLI (`gh repo create`)
+                                         after files are generated and pushes the initial commit when available.
                                          [default: no]
-  --github-repo-visibility <visibility>  GitHub repository visibility
-                                         (choices: public, private) [default:
+  --github-repo-visibility <visibility>  GitHub repository visibility (choices: public, private) [default:
                                          public]
-  --[no-]git-init                        Initialize a local git repository and
-                                         create an initial commit [default:
+  --[no-]git-init                        Initialize a local git repository and create an initial commit [default:
                                          yes]
 
 Features:
-  --copyright-license <license>          Project license (choices: None, MIT,
-                                         Apache-2.0, GPL-3.0, BSD-3-Clause,
+  --copyright-license <license>          Project license (choices: None, MIT, Apache-2.0, GPL-3.0, BSD-3-Clause,
                                          ...; 34 available) [default: None]
-  --github-actions <workflow>            Select GitHub Actions workflows -
-                                         Pick any workflows to include. Leave
-                                         blank for none. (multiple values
-                                         allowed) (choices: tests, lint,
+  --github-actions <workflow>            Select GitHub Actions workflows - Pick any workflows to include. Leave
+                                         blank for none. (multiple values allowed) (choices: tests, lint,
                                          publish)
-  --[no-]setup-readthedocs               Set up Read the Docs documentation -
-                                         Adds the Sphinx/Furo docs setup and
+  --[no-]setup-readthedocs               Set up Read the Docs documentation - Adds the Sphinx/Furo docs setup and
                                          Read the Docs config. [default: yes]
-  --[no-]readme-badges                   Include README badges - Adds test,
-                                         lint, and publish workflow status
+  --[no-]readme-badges                   Include README badges - Adds test, lint, and publish workflow status
                                          badges to the README. [default: yes]
 ```
 
