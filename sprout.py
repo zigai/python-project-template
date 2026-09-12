@@ -322,6 +322,7 @@ def questions(env: Environment, destination: Path) -> list[Question]:
         Question.yes_no(
             key="readme_badges",
             prompt="Include README badges?",
+            help_text="Adds test, lint, and publish workflow status badges to the README.",
             default=True,
         ),
     ]
