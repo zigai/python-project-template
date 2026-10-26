@@ -19,10 +19,6 @@ license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">={{ python_min_version }}"
 dependencies = []
-{% if project_type == 'cli' %}
-[project.scripts]
-{{ repo_name }} = "{{ package_name }}.cli:main"
-{% endif %}
 
 classifiers = [
     "Typing :: Typed",
@@ -40,6 +36,11 @@ classifiers = [
 keywords = [
     "{{ package_name }}"
 ]
+
+{% if project_type == 'cli' %}
+[project.scripts]
+{{ repo_name }} = "{{ package_name }}.cli:main"
+{% endif %}
 
 [project.optional-dependencies]
 test = ["pytest>=9.1.1", "coverage>=7.16.0"]
