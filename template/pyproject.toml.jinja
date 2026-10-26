@@ -47,11 +47,11 @@ test = ["pytest>=9.1.1", "coverage>=7.16.0"]
 dev = [
     "pytest>=9.1.1",
     "coverage>=7.16.0",
-    "ruff==0.16.6",
+    "ruff==0.16.10",
     "pre-commit>=4.6.2",
     "pyrefly>=1.2.0",
     "codespell>=2.4.3",
-    "rattle-lint>=3.0.0",
+    "rattle-lint>=3.4.0{% if (python_min_version.split('.') | map('int') | list) < [3, 11] %}; python_version >= '3.11'{% endif %}",
 ]
 {% if setup_readthedocs %}
 docs = [
@@ -71,16 +71,19 @@ docs = [
 test = ["pytest>=9.1.1", "coverage>=7.16.0"]
 dev = [
     { include-group = "test" },
-    "ruff==0.16.6",
+    "ruff==0.16.10",
     "pre-commit>=4.6.2",
     "pyrefly>=1.2.0",
     "codespell>=2.4.3",
-    "rattle-lint>=3.0.0",
+    "rattle-lint>=3.4.0",
 ]
 
 [tool.uv]
 default-groups = ["test"]
-
+{% if (python_min_version.split('.') | map('int') | list) < [3, 11] %}
+[tool.uv.dependency-groups]
+dev = {requires-python = ">=3.11"}
+{% endif %}
 [project.urls]
 Repository = "{{ repository_url }}"
 Issues = "{{ repository_url }}/issues"
@@ -138,6 +141,7 @@ enable = [
     "module-all-at-bottom",
     "no-underscore-all-exports",
     "forbidden-call",
+    "forbidden-name",
     "no-relative-imports",
     "no-underscore-import-aliases",
     "no-unsafe-tempfile-factories",
@@ -155,6 +159,13 @@ enable = [
 
 [tool.rattle.options."forbidden-call"]
 forbidden_calls = ["typing.cast"]
+
+[tool.rattle.options."forbidden-name"]
+forbidden_names = [
+    "variable:exc|Name a caught exception `e`.",
+    "variable:ex|Name a caught exception `e`.",
+    "variable:exception|Name a caught exception `e`.",
+]
 
 [tool.ruff]
 line-length = 100

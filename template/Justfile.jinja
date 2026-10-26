@@ -1,3 +1,4 @@
+{%- set dev_python_version = '3.11' if (python_default_version.split('.') | map('int') | list) < [3, 11] else python_default_version -%}
 set positional-arguments
 set script-interpreter := ['uv', 'run', '--no-project', '--', 'python']
 
@@ -9,15 +10,15 @@ _require-uv:
 
 # Check code style and potential issues
 lint: _require-uv
-  uv run --group dev ruff check .
+  uv run --python {{ dev_python_version }} --group dev ruff check .
 
 # Format code
 format: _require-uv
-  uv run --group dev ruff format .
+  uv run --python {{ dev_python_version }} --group dev ruff format .
 
 # Fix automatically fixable linting issues
 fix: _require-uv
-  uv run --group dev ruff check --fix .
+  uv run --python {{ dev_python_version }} --group dev ruff check --fix .
 
 # Run tests across all supported Python versions
 [script]
@@ -161,8 +162,8 @@ docs-serve port="8000": _require-uv
 {% endif %}
 # Setup or update local dev environment, keeps previously installed packages
 setup: _require-uv
-  uv sync --inexact --group dev
-  uv run --group dev pre-commit install
+  uv sync --python {{ dev_python_version }} --inexact --group dev
+  uv run --python {{ dev_python_version }} --group dev pre-commit install
 
 # Run tests with coverage and show a coverage report
 [script]
@@ -190,15 +191,15 @@ clean:
 
 # Static type check with pyrefly
 typecheck: _require-uv
-  uv run --group dev pyrefly check --min-severity warn
+  uv run --python {{ dev_python_version }} --group dev pyrefly check --min-severity warn
 
 # Check code for common misspellings
 spell: _require-uv
-  uv run --group dev codespell
+  uv run --python {{ dev_python_version }} --group dev codespell
 
 # Run all non-mutating quality checks
-check: lint test typecheck
-  uv run --group dev ruff format --check .
+check: lint test typecheck spell
+  uv run --python {{ dev_python_version }} --group dev ruff format --check .
 
 # List available commands
 help:
