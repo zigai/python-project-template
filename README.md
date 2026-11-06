@@ -7,8 +7,8 @@ A Sprout template for modern Python packages.
 - [uv](https://docs.astral.sh/uv/) dependency management and an `uv_build` package backend
 - A generated `pyproject.toml` with package metadata, dependency groups, project links, and tool configuration
 - [just](https://github.com/casey/just) recipes for environment setup, checks, tests, coverage, formatting, builds, and documentation
-- Code quality checks with [ruff](https://docs.astral.sh/ruff/), [pyrefly](https://pyrefly.org/), Codespell, Rattle, and pre-commit
-- [pytest](https://docs.pytest.org/en/stable/) and coverage, with local tests across the selected Python version range
+- Code quality checks with [ruff](https://docs.astral.sh/ruff/), [pyrefly](https://pyrefly.org/), Rattle
+- [pytest](https://docs.pytest.org/en/stable/) and coverage, with local version matrices for libraries and published packages
 - GitHub Actions workflows for linting, tests, and PyPI publishing
 - GitHub repository creation through [GitHub CLI](https://cli.github.com/)
 - Read the Docs setup using Sphinx, Furo, MyST, and generated API documentation
@@ -105,7 +105,6 @@ your-project/
 ├── .python-version             # default local Python version
 ├── .python-versions            # local test matrix Python versions
 ├── .editorconfig
-├── .pre-commit-config.yaml
 ├── pyproject.toml
 ├── README.md
 ├── CONTRIBUTING.md

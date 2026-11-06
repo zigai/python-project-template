@@ -5,8 +5,9 @@
 {%- set repository_slug = normalized_repository_url.removeprefix("https://github.com/") %}
 
 {%- if readme_badges %}
+{%- set badges %}
 
-{%- if is_github_repo and 'tests' in github_actions %}
+{% if is_github_repo and 'tests' in github_actions -%}
 [![Tests]({{ normalized_repository_url }}/actions/workflows/test.yml/badge.svg)]({{ normalized_repository_url }}/actions/workflows/test.yml)
 {%- endif %}
 {%- if setup_readthedocs %}
@@ -18,22 +19,31 @@
 {%- if copyright_license != "None" and is_github_repo %}
 [![License](https://img.shields.io/github/license/{{ repository_slug }}.svg)](LICENSE)
 {%- endif %}
+{%- endset %}
+
+{{ badges.strip() }}
 {%- endif %}
 
+{%- if description %}
+
 {{ description }}
-{% if setup_readthedocs %}
+{%- endif %}
+{%- if setup_readthedocs %}
+
 ## Documentation
 
 Documentation is available on [Read the Docs](https://{{ repo_name }}.readthedocs.io/).
-{% endif %}
-{% if project_type == 'cli' %}
+{%- endif %}
+{%- if project_type == 'cli' %}
+
 ## CLI Usage
 
 ```sh
 uv tool install {{ repo_name }}
 {{ repo_name }} --help
 ```
-{% endif %}
+{%- endif %}
+
 ## Installation
 
 ```sh

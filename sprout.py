@@ -71,7 +71,9 @@ PROJECT_TYPE_CHOICES = [
 ]
 
 
-def validate_package_name(value: str, answers: dict[str, Any]) -> tuple[bool, str | None]:
+def validate_package_name(
+    value: str, answers: dict[str, Any]
+) -> tuple[bool, str | None]:
     name = value.strip()
     if not name:
         return False, "Package name is required."
@@ -88,9 +90,15 @@ def validate_versions(value: str, answers: dict[str, Any]) -> tuple[bool, str | 
     if not required.issubset(answers):
         return True, None
 
-    min_version = tuple(int(part) for part in str(answers["python_min_version"]).split("."))
-    max_version = tuple(int(part) for part in str(answers["python_max_version"]).split("."))
-    default_version = tuple(int(part) for part in str(answers["python_default_version"]).split("."))
+    min_version = tuple(
+        int(part) for part in str(answers["python_min_version"]).split(".")
+    )
+    max_version = tuple(
+        int(part) for part in str(answers["python_max_version"]).split(".")
+    )
+    default_version = tuple(
+        int(part) for part in str(answers["python_default_version"]).split(".")
+    )
 
     if min_version > max_version:
         return (
@@ -119,15 +127,30 @@ def _python_identifier(name: str) -> str:
 def should_skip_file(relative_path: str, answers: dict[str, Any]) -> bool:
     github_actions = answers.get("github_actions", [])
 
+    if relative_path == ".python-versions.jinja" and not (
+        answers.get("project_type") == "library" or "publish" in github_actions
+    ):
+        return True
     if should_skip_license_file(relative_path, answers):
         return True
-    if relative_path == ".github/workflows/test.yml.jinja" and "tests" not in github_actions:
+    if (
+        relative_path == ".github/workflows/test.yml.jinja"
+        and "tests" not in github_actions
+    ):
         return True
-    if relative_path == ".github/workflows/lint.yml.jinja" and "lint" not in github_actions:
+    if (
+        relative_path == ".github/workflows/lint.yml.jinja"
+        and "lint" not in github_actions
+    ):
         return True
-    if relative_path == ".github/workflows/publish.yml.jinja" and "publish" not in github_actions:
+    if (
+        relative_path == ".github/workflows/publish.yml.jinja"
+        and "publish" not in github_actions
+    ):
         return True
-    if relative_path == ".readthedocs.yaml.jinja" and not answers.get("setup_readthedocs"):
+    if relative_path == ".readthedocs.yaml.jinja" and not answers.get(
+        "setup_readthedocs"
+    ):
         return True
     if relative_path.startswith("docs/") and not answers.get("setup_readthedocs"):
         return True
@@ -196,7 +219,9 @@ def questions(env: Environment, destination: Path) -> list[Question]:
     ) -> list[tuple[str, str]]:
         min_version = answers.get("python_min_version")
         max_version = answers.get("python_max_version")
-        return filtered_version_choices(min_version=min_version, max_version=max_version)
+        return filtered_version_choices(
+            min_version=min_version, max_version=max_version
+        )
 
     def default_python_default_version(answers: dict[str, Any]) -> str:
         choices = python_default_version_choices(answers)

@@ -43,14 +43,11 @@ keywords = [
 {% endif %}
 
 [project.optional-dependencies]
-test = ["pytest>=9.1.1", "coverage>=7.16.0"]
 dev = [
     "pytest>=9.1.1",
     "coverage>=7.16.0",
     "ruff==0.16.10",
-    "pre-commit>=4.6.2",
     "pyrefly>=1.2.0",
-    "codespell>=2.4.3",
     "rattle-lint>=3.4.0{% if (python_min_version.split('.') | map('int') | list) < [3, 11] %}; python_version >= '3.11'{% endif %}",
 ]
 {% if setup_readthedocs %}
@@ -68,22 +65,16 @@ docs = [
 {% endif %}
 
 [dependency-groups]
-test = ["pytest>=9.1.1", "coverage>=7.16.0"]
 dev = [
-    { include-group = "test" },
+    "pytest>=9.1.1",
+    "coverage>=7.16.0",
     "ruff==0.16.10",
-    "pre-commit>=4.6.2",
     "pyrefly>=1.2.0",
-    "codespell>=2.4.3",
-    "rattle-lint>=3.4.0",
+    "rattle-lint>=3.4.0{% if (python_min_version.split('.') | map('int') | list) < [3, 11] %}; python_version >= '3.11'{% endif %}",
 ]
 
 [tool.uv]
-default-groups = ["test"]
-{% if (python_min_version.split('.') | map('int') | list) < [3, 11] %}
-[tool.uv.dependency-groups]
-dev = {requires-python = ">=3.11"}
-{% endif %}
+default-groups = ["dev"]
 [project.urls]
 Repository = "{{ repository_url }}"
 Issues = "{{ repository_url }}/issues"
@@ -103,6 +94,8 @@ module-root = ""
 [tool.coverage.run]
 source = ["{{ package_name }}"]
 branch = true
+parallel = true
+patch = ["subprocess"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -291,6 +284,7 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "lf"
+exclude = []
 
 [tool.ruff.lint.isort]
 known-first-party = ["{{ package_name }}", "tests"]
@@ -298,5 +292,3 @@ known-first-party = ["{{ package_name }}", "tests"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.codespell]
-skip = '.git,uv.lock'
