@@ -5,12 +5,13 @@
     "LGPL-3.0": "LGPL-3.0-only",
     "LGPL-2.1": "LGPL-2.1-only"
 } -%}
+{%- set rattle_marker = (python_min_version.split('.') | map('int') | list) < [3, 11] -%}
 [project]
 name = "{{ package_name }}"
 version = "0.1.0"
 description = "{{ description }}"
 {%- if author_name or author_email %}
-authors = [{{ "{" }}{%- if author_name -%}name = "{{ author_name }}"{%- endif -%}{%- if author_name and author_email -%}, {% endif -%}{%- if author_email -%}email = "{{ author_email }}"{%- endif -%}{{ "}" }}]
+authors = [{{ "{ " }}{%- if author_name -%}name = "{{ author_name }}"{%- endif -%}{%- if author_name and author_email -%}, {% endif -%}{%- if author_email -%}email = "{{ author_email }}"{%- endif -%}{{ " }" }}]
 {%- endif %}
 {%- if copyright_license != "None" %}
 license = "{{ SPDX_LICENSE_EXPRESSION_MAP.get(copyright_license, copyright_license) }}"
@@ -33,23 +34,25 @@ classifiers = [
 {%- endfor %}
 ]
 
-keywords = [
-    "{{ package_name }}"
-]
+keywords = ["{{ package_name }}"]
+{%- if project_type == 'cli' %}
 
-{% if project_type == 'cli' %}
 [project.scripts]
 {{ repo_name }} = "{{ package_name }}.cli:main"
-{% endif %}
+{%- endif %}
 
 [project.optional-dependencies]
+{%- if rattle_marker %}
 dev = [
     "pytest>=9.1.1",
     "coverage>=7.16.0",
     "ruff==0.16.10",
     "pyrefly>=1.2.0",
-    "rattle-lint>=3.4.0{% if (python_min_version.split('.') | map('int') | list) < [3, 11] %}; python_version >= '3.11'{% endif %}",
+    "rattle-lint>=3.4.0; python_version >= '3.11'",
 ]
+{%- else %}
+dev = ["pytest>=9.1.1", "coverage>=7.16.0", "ruff==0.16.10", "pyrefly>=1.2.0", "rattle-lint>=3.4.0"]
+{%- endif %}
 {% if setup_readthedocs %}
 docs = [
     "beautifulsoup4",
@@ -65,13 +68,17 @@ docs = [
 {% endif %}
 
 [dependency-groups]
+{%- if rattle_marker %}
 dev = [
     "pytest>=9.1.1",
     "coverage>=7.16.0",
     "ruff==0.16.10",
     "pyrefly>=1.2.0",
-    "rattle-lint>=3.4.0{% if (python_min_version.split('.') | map('int') | list) < [3, 11] %}; python_version >= '3.11'{% endif %}",
+    "rattle-lint>=3.4.0; python_version >= '3.11'",
 ]
+{%- else %}
+dev = ["pytest>=9.1.1", "coverage>=7.16.0", "ruff==0.16.10", "pyrefly>=1.2.0", "rattle-lint>=3.4.0"]
+{%- endif %}
 
 [tool.uv]
 default-groups = ["dev"]
@@ -104,10 +111,7 @@ exclude_lines = [
     'if TYPE_CHECKING:',
     'if typing.TYPE_CHECKING:',
 ]
-omit = [
-    "tests/*",
-    "tests/**",
-]
+omit = ["tests/*", "tests/**"]
 
 [tool.pyrefly]
 project-includes = ["{{ package_name }}"]
@@ -263,21 +267,13 @@ exclude = ["build"]
 "examples/*.py" = ["INP001"]
 
 [tool.ruff.lint.pep8-naming]
-classmethod-decorators = [
-    "pydantic.validator",
-    "declared_attr",
-    "expression",
-    "comparator",
-]
+classmethod-decorators = ["pydantic.validator", "declared_attr", "expression", "comparator"]
 
 [tool.ruff.lint.flake8-builtins]
 ignorelist = ["id", "input"]
 
 [tool.ruff.lint.flake8-type-checking]
-runtime-evaluated-base-classes = [
-    "pydantic.BaseModel",
-    "sqlalchemy.orm.DeclarativeBase",
-]
+runtime-evaluated-base-classes = ["pydantic.BaseModel", "sqlalchemy.orm.DeclarativeBase"]
 
 [tool.ruff.format]
 quote-style = "double"
